@@ -6,15 +6,37 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    container_name: api-gateway
+    image: api-gateway
+    restart:
+      on-failure
+    networks:
+      - foxiom
   user_service:
     build:
       context: ./users-services
       dockerfile: Dockerfile
+    container_name: user-service
+    image: user-service
     ports:
       - "3001:3001"
+    restart: 
+      on-failure
+    networks:
+      - foxiom
   books_service:
     build:
       context: ./books-services
       dockerfile: Dockerfile
+    container_name: books-service
+    image: books-service
+    restart: 
+      on-failure
     ports:
       - "3002:3002"
+    networks:
+      - foxiom
+networks:
+  foxiom:
+    driver: bridge
+    

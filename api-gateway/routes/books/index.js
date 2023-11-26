@@ -7,7 +7,7 @@ const { BOOKS_SERVICE_URL } = process.env
 router.get('/', async (req, res) => {
   try {
     const response = await axios.get(`${BOOKS_SERVICE_URL}/books`)
-    return res.status(status.SUCCESS).send(response.data.data)
+    return res.status(status.SUCCESS).send(response.data)
   } catch (error) {
     const message = error.response?.data ? error.response.data : MSG.somethingWentWrong
     return res.status(status.ERROR).send(utility.errorRes(message))
@@ -17,7 +17,7 @@ router.get('/', async (req, res) => {
 router.post('/', async (req, res) => {
   try {
     const response = await axios.post(`${BOOKS_SERVICE_URL}/books`, req.body)
-    return res.status(status.SUCCESS).send(response.data.data)
+    return res.status(status.SUCCESS).send(response.data)
   } catch (error) {
     const message = error.response?.data ? error.response.data : MSG.somethingWentWrong
     return res.status(status.ERROR).send(utility.errorRes(message))
@@ -27,7 +27,7 @@ router.post('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const response = await axios.get(`${BOOKS_SERVICE_URL}/books/${req.params.id}`)
-    return res.status(status.SUCCESS).send(response.data.data)
+    return res.status(status.SUCCESS).send(response.data)
   } catch (error) {
     console.log(error)
     const message = error.response?.data ? error.response.data : MSG.somethingWentWrong
@@ -38,7 +38,7 @@ router.get('/:id', async (req, res) => {
 router.put('/:id', async (req, res) => {
   try {
     const response = await axios.put(`${BOOKS_SERVICE_URL}/books/${req.params.id}`, req.body)
-    return res.status(status.SUCCESS).send(response.data.data)
+    return res.status(status.SUCCESS).send(response.data)
   } catch (error) {
     console.log(error)
     const message = error.response?.data ? error.response.data : MSG.somethingWentWrong
@@ -49,7 +49,7 @@ router.put('/:id', async (req, res) => {
 router.delete('/:id', async (req, res) => {
   try {
     const response = await axios.delete(`${BOOKS_SERVICE_URL}/books/${req.params.id}`)
-    return res.status(status.SUCCESS).send(response.data.data)
+    return res.status(status.SUCCESS).send(response.data)
   } catch (error) {
     console.log(error)
     const message = error.response?.data ? error.response.data : MSG.somethingWentWrong
