@@ -2,19 +2,19 @@ version: '3'
 services:
   api_gateway:
     build:
-      context: ./api_gateway
+      context: ./api-gateway
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
   user_service:
     build:
-      context: ./user_service
+      context: ./users-services
       dockerfile: Dockerfile
     ports:
       - "3001:3001"
   books_service:
     build:
-      context: ./books_service
+      context: ./books-services
       dockerfile: Dockerfile
     ports:
       - "3002:3002"
