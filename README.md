@@ -26,7 +26,7 @@ The project follows a microservices architecture, allowing separation of concern
 
 To set up the services locally, follow these steps:
 
-1. Clone the repository: `git clone https://github.com/your-username/backend-apis.git`
+1. Clone the repository: `git clone https://github.com/Sidheeqpallam/foxiom.git`
 2. Install dependencies: `npm install`
 3. Configure environment variables (if applicable).
 4. Start the services: `npm start`
