@@ -1,0 +1,250 @@
+openapi: 3.0.3
+info:
+  title: rest api v.1.0.0
+  description: |-
+    All the rest apis of foxiom
+
+    Some useful links:
+    - [Foxiom Staging API ](http://localhost:3000/api/v1)
+    - [Foxiom Production API ](http://localhost:3000/api/v1)
+    - [Foxiom Development API ](http://localhost:3000/api/v1)
+
+  contact:
+    email: sidheeqpallam111@gmail.com
+  version: 1.0.0
+
+servers:
+  - url: http://localhost:3000/api/v1
+  - url: http://localhost:3000/api/v1
+  - url: http://localhost:3000/api/v1
+
+tags:
+  - name: users
+    description: Operations about users
+
+  - name: books
+    description: Books APIs
+
+paths:
+  /users/auth/register: 
+    post:
+      tags: 
+        - user
+      summary: create new user account
+      description:  ''
+      operationId: createUser
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                userName:
+                  type: string
+                userEmail: 
+                  type: string
+                userMobileNo: 
+                  type: string
+                userPassword: 
+                  type: string
+              required: 
+                - userName
+                - userMobileNo
+                - userPassword
+      responses:
+        '200':
+           $ref: '#/components/responses/SuccessfulResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /users/auth/login: 
+    post:
+      tags: 
+        - user
+      summary: create new user account
+      description:  ''
+      operationId: loginUser
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                userMobileNo: 
+                  type: string
+                userPassword: 
+                  type: string
+              required: 
+                - userMobileNo
+                - userPassword
+      responses:
+        '200':
+           $ref: '#/components/responses/SuccessfulResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse' 
+  /books: 
+    post:
+      tags: 
+        - user
+      summary: create new book
+      description:  ''
+      operationId: createBook
+      security:
+        -  JWTAuth: []      
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                bookTitle:
+                  type: string
+                bookAuthor:
+                  type: string
+                bookDescription:
+                  type: string
+                bookPublishedYear:
+                  type: number
+              required: 
+                - bookTitle
+                - bookAuthor
+                - bookPublishedYear
+      responses:
+        '200':
+           $ref: '#/components/responses/SuccessfulResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+    get:
+      tags: 
+        - user
+      summary: create new book
+      description:  ''
+      operationId: getAllBook
+      security:
+        -  JWTAuth: []      
+      responses:
+        '200':
+           $ref: '#/components/responses/SuccessfulResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+  /books/{id}: 
+    post:
+      tags: 
+        - user
+      summary: create new book
+      description:  ''
+      operationId: updateBook
+      parameters:
+        - name: id
+          in: path
+          description: ID of book
+          required: true
+          schema:
+            type: integer
+            format: int64      
+      security:
+        -  JWTAuth: []      
+      requestBody:
+        description: ''
+        content:
+          application/json:
+            schema:
+              type: object
+              properties: 
+                bookTitle:
+                  type: string
+                bookAuthor:
+                  type: string
+                bookDescription:
+                  type: string
+                bookPublishedYear:
+                  type: number
+              required: 
+                - bookTitle
+                - bookAuthor
+                - bookPublishedYear
+      responses:
+        '200':
+           $ref: '#/components/responses/SuccessfulResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+    get:
+      tags: 
+        - user
+      summary: create new book
+      description:  ''
+      operationId: getBook
+      parameters:
+        - name: id
+          in: path
+          description: ID of book
+          required: true
+          schema:
+            type: integer
+            format: int64      
+      security:
+        -  JWTAuth: []      
+      responses:
+        '200':
+           $ref: '#/components/responses/SuccessfulResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+    delete:
+      tags: 
+        - user
+      summary: delete book
+      description:  ''
+      operationId: deleteBook
+      parameters:
+        - name: id
+          in: path
+          description: ID of book
+          required: true
+          schema:
+            type: integer
+            format: int64      
+      security:
+        -  JWTAuth: []      
+      responses:
+        '200':
+           $ref: '#/components/responses/SuccessfulResponse'
+        '400':
+          $ref: '#/components/responses/ErrorResponse'
+
+components:
+  securitySchemes:
+    JWTAuth:
+      type: apiKey
+      name: Authorization
+      in: header
+      description: Enter JWT token in the format 'Bearer <token>' 
+  responses:
+    SuccessfulResponse:
+      description: 'Success response'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              message:
+                type: string
+              data:
+                type: array
+                items:
+                  type: object
+    ErrorResponse:
+      description: 'Error response'
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              status:
+                type: string
+              message:
+                type: string
+                
