@@ -5,11 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "node --expose-gc ./node_modules/.bin/jest api-gateway/tests/ --runInBand  --forceExit",
-    "start-api": "node ./api-gateway/bin/www",
-    "start-user": "node ./users-services/bin/www",
-    "start-books": "node ./books-services/bin/www",
-    "start-all": "concurrently \"npm run start-api\" \"npm run start-user\" \"npm run start-books\"",
-    "dev": "concurrently \"nodemon ./api-gatewaybin/www\" \"nodemon ./users-services/bin/www\" \"nodemon ./books-services/bin/www\""
+    "start": "node ./bin/www",
+    "dev": "nodemon ./bin/www"
   },
   "author": "",
   "license": "ISC",
