@@ -13,9 +13,10 @@ test("Checking the app is healthy", async () => {
     });
 });
 
-let token = null
-let userId = null
+let token
 
+// AUTHENTICATION APIS
+let userId = null
 const userData = {
   userName: 'sidheeq',
   userEmail: 'sidheeq',
@@ -92,3 +93,153 @@ test("User login", async () => {
     });
 
 });
+
+// BOOKS APIS
+let bookId = null
+const bookData = {
+  bookTitle: 'My book 3',
+  bookAuthor: 'sidheeq',
+  bookDescription: 'My book discription',
+  bookPublishedYear: 2000,
+}
+
+const invalidBookData = {
+  bookTitle: 'My book',
+  bookAuthor: 'sidheeq',
+  bookDescription: 'My book discription',
+  bookPublishedYear: 20030, // invalid year
+}
+
+test('Create book', async () => {
+
+  await supertest(app).post("/api/v1/books")
+    .set('Authorization', `Bearer ${token}`)
+    .send(bookData)
+    .expect(200)
+    .then(async (response) => {
+      const { message, status, data } = response.body
+      expect(message).toBe(MSG.dataCreated)
+      expect(status).toBe('success')
+      bookId = data.book._id
+      expect(data.book.bookTitle).toBe(utility.capitalizeString(bookData.bookTitle))
+      expect(data.book.bookAuthor).toBe(utility.capitalizeString(bookData.bookAuthor))
+      expect(data.book.bookPublishedYear).toBe(bookData.bookPublishedYear)
+    });
+
+  await supertest(app).post("/api/v1/books")
+    .set('Authorization', `Bearer ${token}`)
+    .send(bookData)
+    .expect(400)
+    .then(async (response) => {
+      expect(response.body.message).toEqual(utility.errorRes(MSG.alreadyExists));
+    });
+
+  await supertest(app).post("/api/v1/books")
+    .set('Authorization', `Bearer invalid token`)
+    .send(bookData)
+    .expect(401)
+    .then(async (response) => {
+      expect(response.body).toEqual(utility.errorRes(MSG.notAuthorized));
+    });
+
+  await supertest(app).post("/api/v1/books")
+    .set('Authorization', `Bearer ${token}`)
+    .send(invalidBookData)
+    .expect(400)
+    .then(async (response) => {
+      expect(response.body.message).toEqual(utility.errorRes(MSG.missingRequiredData));
+    })
+
+})
+
+test('Get a particular book', async () => {
+
+  await supertest(app).get(`/api/v1/books/${bookId}`)
+    .set('Authorization', `Bearer ${token}`)
+    .send()
+    .expect(200)
+    .then(async (response) => {
+      const { message, status, data } = response.body
+      expect(message).toBe(MSG.foundSuccessfully)
+      expect(status).toBe('success')
+      expect(data.book.bookTitle).toBe(utility.capitalizeString(bookData.bookTitle))
+      expect(data.book._id).toBe(bookId)
+      expect(data.book.bookAuthor).toBe(utility.capitalizeString(bookData.bookAuthor))
+      expect(data.book.bookPublishedYear).toBe(bookData.bookPublishedYear)
+    });
+
+})
+
+
+test('Update a book', async () => {
+
+  const newData = { ...bookData, bookAuthor: 'sidheeq pallam' }
+  await supertest(app).put(`/api/v1/books/${bookId}`)
+    .set('Authorization', `Bearer ${token}`)
+    .send({ ...bookData, bookAuthor: 'sidheeq pallam' })
+    .expect(200)
+    .then(async (response) => {
+      const { message, status, data } = response.body
+      expect(message).toBe(MSG.updatedSuccessfully)
+      expect(status).toBe('success')
+      expect(data.book._id).toBe(bookId)
+      expect(data.book.bookTitle).toBe(utility.capitalizeString(bookData.bookTitle))
+      expect(data.book.bookAuthor).toBe(utility.capitalizeString(newData.bookAuthor))
+      expect(data.book.bookPublishedYear).toBe(bookData.bookPublishedYear)
+    });
+
+  await supertest(app).put(`/api/v1/books/${bookId}`)
+    .set('Authorization', `Bearer invalid token`)
+    .send(bookData)
+    .expect(401)
+    .then(async (response) => {
+      expect(response.body).toEqual(utility.errorRes(MSG.notAuthorized));
+    });
+
+  await supertest(app).put(`/api/v1/books/${bookId}`)
+    .set('Authorization', `Bearer ${token}`)
+    .send(invalidBookData)
+    .expect(400)
+    .then(async (response) => {
+      expect(response.body.message).toEqual(utility.errorRes(MSG.missingRequiredData));
+    })
+
+})
+
+test('Get all books', async () => {
+
+  await supertest(app).get("/api/v1/books")
+    .set('Authorization', `Bearer ${token}`)
+    .send()
+    .expect(200)
+    .then(async (response) => {
+      const { message, status } = response.body
+      expect(status).toBe('success')
+      expect(message).toMatch(new RegExp(`${MSG.dataNotFound}|${MSG.foundSuccessfully}`))
+    });
+
+})
+
+test('Delete book', async () => {
+
+  await supertest(app).delete(`/api/v1/books/${bookId}`)
+    .set('Authorization', `Bearer ${token}`)
+    .send()
+    .expect(200)
+    .then(async (response) => {
+      expect(response.body).toEqual(utility.successRes(MSG.deletedSuccessfully, []));
+    })
+
+})
+
+test('Delete user account', async () => {
+
+  await supertest(app).delete(`/api/v1/users/auth/${userId}`)
+    .set('Authorization', `Bearer ${token}`)
+    .send()
+    .expect(200)
+    .then(async (response) => {
+      expect(response.body).toEqual(utility.successRes(MSG.deletedSuccessfully, []));
+    })
+
+})

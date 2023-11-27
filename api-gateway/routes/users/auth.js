@@ -2,6 +2,7 @@ const router = require('express').Router()
 const { status, MSG } = require('../../helpers/constants/constants')
 const utility = require('../../helpers/utility')
 const axios = require('axios')
+const authMiddlware = require('../../middlewares/auth')
 const { USER_SERVICE_URL } = process.env
 
 
@@ -21,6 +22,17 @@ router.post('/register', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const response = await axios.post(`${USER_SERVICE_URL}/login`, req.body)
+    return res.status(status.SUCCESS).send(response.data)
+  } catch (error) {
+    const message = error.response?.data ? error.response.data : MSG.somethingWentWrong
+    const status = error.response?.status ? error.response.status : status.ERROR
+    return res.status(status).send(utility.errorRes(message))
+  }
+})
+
+router.delete('/:id', authMiddlware.verifyMyToken, async (req, res) => {
+  try {
+    const response = await axios.delete(`${USER_SERVICE_URL}/${req.params.id}`)
     return res.status(status.SUCCESS).send(response.data)
   } catch (error) {
     const message = error.response?.data ? error.response.data : MSG.somethingWentWrong

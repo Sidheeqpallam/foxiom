@@ -20,8 +20,7 @@ const verifyMyToken = async (req, res, next) => {
     req.user = verify
     return next()
   } catch (err) {
-    console.log('Error Occured in Auth middleware', err)
-    return res.status(status.UNAUTHORIZED).send(utility.errorRes('Session Expired', status.UNAUTHORIZED))
+    return res.status(status.UNAUTHORIZED).send(utility.errorRes(MSG.notAuthorized))
   }
 }
 

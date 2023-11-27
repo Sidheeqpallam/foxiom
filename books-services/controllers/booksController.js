@@ -16,11 +16,11 @@ const createBook = async (req, res) => {
     bookAuthor = utility.capitalizeString(bookAuthor)
     bookPublishedYear = utility.isValidBookPublishingYear(bookPublishedYear)
     if (!bookTitle || !bookAuthor || !bookPublishedYear) {
-      return res.status(status.ERROR).send(utility.errorRes(MSG.missingRequiredData))
+      return res.status(status.BAD_REQUEST).send(utility.errorRes(MSG.missingRequiredData))
     }
     const exist = await bookModal.findOne({ bookTitle })
     if (exist) {
-      return res.status(status.ERROR).send(utility.errorRes(MSG.alreadyExists))
+      return res.status(status.BAD_REQUEST).send(utility.errorRes(MSG.alreadyExists))
     }
     const newBook = new bookModal({
       bookTitle,
@@ -29,7 +29,7 @@ const createBook = async (req, res) => {
       bookPublishedYear,
     })
     const response = await newBook.save()
-    return res.status(status.SUCCESS)
+    return res.status(status.CREATED)
       .send(utility.successRes(MSG.dataCreated, { book: response }))
   } catch (error) {
     console.log(error)
@@ -56,11 +56,11 @@ const getBook = async (req, res) => {
   try {
     const _id = req.params.id
     if (!_id) {
-      return res.status(status.ERROR).send(utility.errorRes(MSG.missingRequiredData))
+      return res.status(status.BAD_REQUEST).send(utility.errorRes(MSG.missingRequiredData))
     }
     const book = await bookModal.findById(_id)
     if (!book) {
-      return res.status(status.ERROR).send(utility.errorRes(MSG.invalidId))
+      return res.status(status.BAD_REQUEST).send(utility.errorRes(MSG.invalidId))
     }
     return res.status(status.SUCCESS)
       .send(utility.successRes(MSG.foundSuccessfully, { book }))
@@ -86,20 +86,23 @@ const updateBook = async (req, res) => {
     bookAuthor = utility.capitalizeString(bookAuthor)
     bookPublishedYear = utility.isValidBookPublishingYear(bookPublishedYear)
     if (!bookTitle || !bookAuthor || !bookPublishedYear || !_id) {
-      return res.status(status.ERROR).send(utility.errorRes(MSG.missingRequiredData))
+      return res.status(status.BAD_REQUEST).send(utility.errorRes(MSG.missingRequiredData))
     }
-    const exist = bookModal.findOne({ bookTitle, _id: { $ne: _id } })
+    const exist = await bookModal.findOne({ bookTitle, _id: { $ne: _id } })
     if (exist) {
-      return res.status(status.ERROR).send(utility.errorRes(MSG.alreadyExists))
+      return res.status(status.BAD_REQUEST).send(utility.errorRes(MSG.alreadyExists))
     }
-    const book = await bookModal.findByIdAndUpdate(_id, {
-      bookTitle,
-      bookAuthor,
-      bookDescription,
-      bookPublishedYear,
-    })
+    const book = await bookModal.findByIdAndUpdate(_id,
+      {
+        bookTitle,
+        bookAuthor,
+        bookDescription,
+        bookPublishedYear,
+      },
+      { new: true }
+    )
     if (!book) {
-      return res.status(status.ERROR).send(utility.errorRes(MSG.invalidId))
+      return res.status(status.BAD_REQUEST).send(utility.errorRes(MSG.invalidId))
     }
     return res.status(status.SUCCESS)
       .send(utility.successRes(MSG.updatedSuccessfully, { book }))
@@ -113,11 +116,11 @@ const deleteBook = async (req, res) => {
   try {
     const _id = req.params.id
     if (!_id) {
-      return res.status(status.ERROR).send(utility.errorRes(MSG.missingRequiredData))
+      return res.status(status.BAD_REQUEST).send(utility.errorRes(MSG.missingRequiredData))
     }
     const book = await bookModal.findByIdAndDelete(_id)
     if (!book) {
-      return res.status(status.ERROR).send(utility.errorRes(MSG.invalidId))
+      return res.status(status.BAD_REQUEST).send(utility.errorRes(MSG.invalidId))
     }
     return res.status(status.SUCCESS)
       .send(utility.successRes(MSG.deletedSuccessfully, []))

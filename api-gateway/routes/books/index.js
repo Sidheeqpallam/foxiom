@@ -10,7 +10,8 @@ router.get('/', async (req, res) => {
     return res.status(status.SUCCESS).send(response.data)
   } catch (error) {
     const message = error.response?.data ? error.response.data : MSG.somethingWentWrong
-    return res.status(status.ERROR).send(utility.errorRes(message))
+    const status = error.response?.status ? error.response.status : status.ERROR
+    return res.status(status).send(utility.errorRes(message))
   }
 })
 
@@ -20,7 +21,8 @@ router.post('/', async (req, res) => {
     return res.status(status.SUCCESS).send(response.data)
   } catch (error) {
     const message = error.response?.data ? error.response.data : MSG.somethingWentWrong
-    return res.status(status.ERROR).send(utility.errorRes(message))
+    const status = error.response?.status ? error.response.status : status.ERROR
+    return res.status(status).send(utility.errorRes(message))
   }
 })
 
@@ -29,9 +31,9 @@ router.get('/:id', async (req, res) => {
     const response = await axios.get(`${BOOKS_SERVICE_URL}/books/${req.params.id}`)
     return res.status(status.SUCCESS).send(response.data)
   } catch (error) {
-    console.log(error)
     const message = error.response?.data ? error.response.data : MSG.somethingWentWrong
-    return res.status(status.ERROR).send(utility.errorRes(message))
+    const status = error.response?.status ? error.response.status : status.ERROR
+    return res.status(status).send(utility.errorRes(message))
   }
 })
 
@@ -40,9 +42,9 @@ router.put('/:id', async (req, res) => {
     const response = await axios.put(`${BOOKS_SERVICE_URL}/books/${req.params.id}`, req.body)
     return res.status(status.SUCCESS).send(response.data)
   } catch (error) {
-    console.log(error)
     const message = error.response?.data ? error.response.data : MSG.somethingWentWrong
-    return res.status(status.ERROR).send(utility.errorRes(message))
+    const status = error.response?.status ? error.response.status : status.ERROR
+    return res.status(status).send(utility.errorRes(message))
   }
 })
 
@@ -51,9 +53,9 @@ router.delete('/:id', async (req, res) => {
     const response = await axios.delete(`${BOOKS_SERVICE_URL}/books/${req.params.id}`)
     return res.status(status.SUCCESS).send(response.data)
   } catch (error) {
-    console.log(error)
     const message = error.response?.data ? error.response.data : MSG.somethingWentWrong
-    return res.status(status.ERROR).send(utility.errorRes(message))
+    const status = error.response?.status ? error.response.status : status.ERROR
+    return res.status(status).send(utility.errorRes(message))
   }
 })
 

@@ -86,7 +86,26 @@ const login = async (req, res) => {
   }
 }
 
+const deleteAccount = async (req, res) => {
+  try {
+    const _id = req.params.id
+    if (!_id) {
+      return res.status(status.BAD_REQUEST).send(utility.errorRes(MSG.missingRequiredData))
+    }
+    const user = await userModal.findByIdAndDelete(_id)
+    if (!user) {
+      return res.status(status.BAD_REQUEST).send(utility.errorRes(MSG.invalidId))
+    }
+    return res.status(status.SUCCESS)
+      .send(utility.successRes(MSG.deletedSuccessfully, []))
+  } catch (error) {
+    return res.status(status.ERROR).send(utility.errorRes(MSG.somethingWentWrong))
+  }
+}
+
+
 module.exports = {
   register,
   login,
+  deleteAccount,
 }
