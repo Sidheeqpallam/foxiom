@@ -8,6 +8,9 @@ services:
       - "3000:3000"
     container_name: api-gateway
     image: api-gateway
+    environment: 
+      USER_SERVICE_URL: http://user_service:3001
+      BOOKS_SERVICE_URL: http://books_service:3002
     restart:
       on-failure
     networks:
