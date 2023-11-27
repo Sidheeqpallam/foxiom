@@ -12,9 +12,9 @@ router.post('/register', async (req, res) => {
     const response = await axios.post(`${USER_SERVICE_URL}/register`, req.body)
     return res.status(status.SUCCESS).send(response.data)
   } catch (error) {
-    console.log(error)
     const message = error.response?.data ? error.response.data : MSG.somethingWentWrong
-    return res.status(status.ERROR).send(utility.errorRes(message))
+    const status = error.response?.status ? error.response.status : status.ERROR
+    return res.status(status).send(utility.errorRes(message))
   }
 })
 
@@ -24,7 +24,8 @@ router.post('/login', async (req, res) => {
     return res.status(status.SUCCESS).send(response.data)
   } catch (error) {
     const message = error.response?.data ? error.response.data : MSG.somethingWentWrong
-    return res.status(status.ERROR).send(utility.errorRes(message))
+    const status = error.response?.status ? error.response.status : status.ERROR
+    return res.status(status).send(utility.errorRes(message))
   }
 })
 
